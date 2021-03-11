@@ -86,7 +86,7 @@ public class TestRecipes {
 
             ItemStack output;
             try {
-                output = recipe.getOutputs().isEmpty() ? recipe.getOutputs().get(0) : recipe.getChancedOutputs().get(0).getItemStack();
+                output = recipe.getOutputs().isEmpty() ? recipe.getChancedOutputs().get(0).getItemStack() : recipe.getOutputs().get(0);
             } catch (IndexOutOfBoundsException e) {
                 errored.add(recipe);
                 continue;
@@ -133,8 +133,11 @@ public class TestRecipes {
      * @param detailed Show more detailed logging info.
      * @param exit     Throw an exception upon finding a duplicate.
      *                 Will collect all duplicates for the map before exiting.
+     *
+     * @return         A instance of {@link RecipeList} containing two Lists, first being
+     *                 duplicate recipes, second being errored recipes.
      */
-    public static void testManyToManyMap(RecipeMap<?> map, boolean detailed, boolean exit) {
+    public static RecipeList testManyToManyMap(RecipeMap<?> map, boolean detailed, boolean exit) {
         GALog.logger.info("Testing " + map.getLocalizedName() + " for duplicates...");
 
         Collection<Recipe> recipes = map.getRecipeList();
@@ -288,6 +291,66 @@ public class TestRecipes {
                     fluidOutputs.stream()
                                 .map(FluidStack::getLocalizedName)
                                 .collect(Collectors.toList());
+        }
+    }
+
+    private static class RecipeList {
+        public List<RecipeStruct> duplicates;
+        public List<RecipeStruct> errored;
+
+        public RecipeList(List<RecipeStruct> duplicates, List<RecipeStruct> errored) {
+            this.duplicates = duplicates;
+            this.errored = errored;
+        }
+    }
+
+    private static class TestCases {
+
+        /**
+         * Test two Recipes to see if they are duplicate.
+         *
+         * @return True if recipes are identical, false otherwise.
+         */
+        public static boolean testMatching(RecipeStruct recipe, RecipeStruct oldRecipe) {
+
+            return compareStackLists(recipe.inputs, oldRecipe.inputs)
+                && compareStackLists(recipe.outputs, oldRecipe.outputs)
+                && compareStackLists(recipe.fluidInputs, oldRecipe.fluidInputs)
+                && compareStackLists(recipe.fluidOutputs, oldRecipe.fluidOutputs);
+        }
+
+        /**
+         * Tests to see if the parameters are a subset of each other.
+         *
+         * @return A Tuple, where key is true if first parameter is a subset, and
+         *         value is true if the second parameter is a subset.
+         */
+        private static Tuple<Boolean, Boolean> conflict(RecipeStruct recipe, RecipeStruct oldRecipe) {
+            boolean newIsSubset = recipe.inputs.containsAll(oldRecipe.inputs)
+                               && recipe.fluidInputs.containsAll(oldRecipe.fluidInputs); // TODO Is this good?
+
+            boolean oldIsSubset = oldRecipe.inputs.containsAll(recipe.inputs)
+                               && oldRecipe.fluidInputs.containsAll(recipe.fluidInputs);
+
+            return new Tuple<>(newIsSubset, oldIsSubset);
+        }
+
+        /**
+         * Test if two recipes are a subset of each other.
+         *
+         * @return True if either recipe is a subset, false otherwise.
+         */
+        public static boolean testConflicting(RecipeStruct recipe, RecipeStruct oldRecipe) {
+            Tuple<Boolean, Boolean> subsets = conflict(recipe, oldRecipe);
+
+            // TODO
+            if (subsets.getKey()) {
+                return true;
+            } else if (subsets.getValue()) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }
