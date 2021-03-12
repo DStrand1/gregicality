@@ -1,12 +1,17 @@
 package gregicadditions.utils.testing;
 
+import gregicadditions.materials.SimpleDustMaterial;
+import gregicadditions.utils.GALog;
 import gregicadditions.utils.Tuple;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
-public class TestMethods {
+public class TestCases {
 
     /**
      * Compare the contents of the two Sets.
@@ -100,5 +105,16 @@ public class TestMethods {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Test if an ItemStack has a valid mole count.
+     * @param stack The stack to test.
+     * @param atoms A data structure of the exploded chemical formula.
+     * @return      True if moles are good, false otherwise.
+     */
+    protected static boolean testMoleCounts(ItemStack stack, Map<String, Integer> atoms) {
+        int atomCount = atoms.values().stream().mapToInt(count -> count).sum();
+        return atomCount == stack.getCount();
     }
 }

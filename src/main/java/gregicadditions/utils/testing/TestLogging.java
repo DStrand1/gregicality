@@ -2,10 +2,10 @@ package gregicadditions.utils.testing;
 
 import gregicadditions.utils.GALog;
 
-public class TestCaseLogging {
+public class TestLogging {
 
     protected static void simpleLoggingDupe(HelperObjects.RecipeList list, String mapName, boolean detailed, boolean exit) {
-        for (HelperObjects.RecipeStruct recipe : list.duplicates) {
+        for (HelperObjects.RecipeStruct recipe : list.failed) {
             GALog.logger.error("Duplicate found, "
                     + (detailed ? recipe.toStringDetailed() : recipe.toString()));
         }
@@ -17,7 +17,7 @@ public class TestCaseLogging {
             GALog.logger.error("Could not handle recipe with output: "
                     + (detailed ? recipe.toStringDetailed() : recipe.toString()));
 
-        if (!list.duplicates.isEmpty())
+        if (!list.failed.isEmpty())
             if (exit)
                 GALog.logger.error("Exiting...", new IllegalStateException());
             else
@@ -26,7 +26,7 @@ public class TestCaseLogging {
 
     // TODO Make this much more interesting
     protected static void simpleLoggingConflict(HelperObjects.RecipeList list, String mapName, boolean detailed, boolean exit) {
-        for (HelperObjects.RecipeStruct recipe : list.duplicates) {
+        for (HelperObjects.RecipeStruct recipe : list.failed) {
             GALog.logger.error("Conflict found, "
                     + (detailed ? recipe.toStringDetailed() : recipe.toString()));
         }
@@ -38,7 +38,7 @@ public class TestCaseLogging {
             GALog.logger.error("Could not handle recipe with output: "
                     + (detailed ? recipe.toStringDetailed() : recipe.toString()));
 
-        if (!list.duplicates.isEmpty())
+        if (!list.failed.isEmpty())
             if (exit)
                 GALog.logger.error("Exiting...", new IllegalStateException());
             else

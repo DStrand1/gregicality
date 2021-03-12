@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static gregicadditions.utils.testing.TestMethods.compareStacks;
+import static gregicadditions.utils.testing.TestCases.compareStacks;
 
 public class OLD {
 

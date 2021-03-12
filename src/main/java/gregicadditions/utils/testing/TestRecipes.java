@@ -1,9 +1,9 @@
 package gregicadditions.utils.testing;
 
 import gregicadditions.utils.GALog;
-import gregtech.api.recipes.*;
-import gregtech.api.util.ItemStackHashStrategy;
-import it.unimi.dsi.fastutil.Hash;
+import gregtech.api.recipes.CountableIngredient;
+import gregtech.api.recipes.Recipe;
+import gregtech.api.recipes.RecipeMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -14,19 +14,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static gregicadditions.utils.testing.HelperObjects.*;
-
-public class TestRecipes {
-
-    /**
-     * Hashing strategy used for Maps where the key is an ItemStack.
-     */
-    private static final Hash.Strategy<ItemStack> strategy =
-            ItemStackHashStrategy.builder()
-                    .compareCount(true)
-                    .compareDamage(true)
-                    .compareItem(true)
-                    .build();
+public class TestRecipes extends TestBase {
 
     /**
      * Test for duplicate recipes in Recipe Maps.
@@ -60,8 +48,8 @@ public class TestRecipes {
      */
     public static void testDuplicates(RecipeMap<?> map, boolean detailed, boolean exit) {
         try {
-            Method testMethod = TestMethods.class.getDeclaredMethod("testMatching", RecipeStruct.class, RecipeStruct.class);
-            Method loggingMethod = TestCaseLogging.class.getDeclaredMethod("simpleLoggingDupe", RecipeList.class, String.class, boolean.class, boolean.class);
+            Method testMethod = TestCases.class.getDeclaredMethod("testMatching", HelperObjects.RecipeStruct.class, HelperObjects.RecipeStruct.class);
+            Method loggingMethod = TestLogging.class.getDeclaredMethod("simpleLoggingDupe", HelperObjects.RecipeList.class, String.class, boolean.class, boolean.class);
             testManyToManyMap(map, testMethod, loggingMethod, detailed, exit);
         } catch (NoSuchMethodException e) {
             GALog.logger.error("Failed to reflect test case in method declaration...", e);
@@ -86,8 +74,8 @@ public class TestRecipes {
      */
     public static void testConflicts(RecipeMap<?> map, boolean detailed, boolean exit) {
         try {
-            Method testMethod = TestMethods.class.getDeclaredMethod("testConflicting", RecipeStruct.class, RecipeStruct.class);
-            Method loggingMethod = TestCaseLogging.class.getDeclaredMethod("simpleLoggingConflict", RecipeList.class, String.class, boolean.class, boolean.class);
+            Method testMethod = TestCases.class.getDeclaredMethod("testConflicting", HelperObjects.RecipeStruct.class, HelperObjects.RecipeStruct.class);
+            Method loggingMethod = TestLogging.class.getDeclaredMethod("simpleLoggingConflict", HelperObjects.RecipeList.class, String.class, boolean.class, boolean.class);
             testManyToManyMap(map, testMethod, loggingMethod, detailed, exit);
         } catch (NoSuchMethodException e) {
             GALog.logger.error("Failed to reflect test case in method declaration...", e);
@@ -102,21 +90,21 @@ public class TestRecipes {
      * @param exit     Throw an exception upon finding a duplicate.
      *                 Will collect all duplicates for the map before exiting.
      *
-     * @return         A instance of {@link RecipeList} containing two Lists, first being
+     * @return         A instance of {@link HelperObjects.RecipeList} containing two Lists, first being
      *                 duplicate recipes, second being errored recipes.
      */
-    private static RecipeList testManyToManyMap(RecipeMap<?> map,
-                                                Method testMethod,
-                                                Method loggingMethod,
-                                                boolean detailed,
-                                                boolean exit) {
+    private static HelperObjects.RecipeList testManyToManyMap(RecipeMap<?> map,
+                                                              Method testMethod,
+                                                              Method loggingMethod,
+                                                              boolean detailed,
+                                                              boolean exit) {
         GALog.logger.info("Testing " + map.getLocalizedName() + " for duplicates...");
 
         Collection<Recipe> recipes = map.getRecipeList();
 
-        List<RecipeStruct> checkedRecipes = new ArrayList<>();
-        List<RecipeStruct> duplicates = new ArrayList<>();
-        List<RecipeStruct> errored = new ArrayList<>();
+        List<HelperObjects.RecipeStruct> checkedRecipes = new ArrayList<>();
+        List<HelperObjects.RecipeStruct> duplicates = new ArrayList<>();
+        List<HelperObjects.RecipeStruct> errored = new ArrayList<>();
         AtomicBoolean hasErrored = new AtomicBoolean(false);
 
         for (Recipe recipe : recipes) {
@@ -138,14 +126,14 @@ public class TestRecipes {
             recipe.getChancedOutputs().forEach(entry -> outputs.add(entry.getItemStack()));
             Set<FluidStack> fluidOutputs = new HashSet<>(recipe.getFluidOutputs());
 
-            RecipeStruct currentRecipe = new RecipeStruct(inputs, fluidInputs, outputs, fluidOutputs);
+            HelperObjects.RecipeStruct currentRecipe = new HelperObjects.RecipeStruct(inputs, fluidInputs, outputs, fluidOutputs);
 
             if (hasErrored.getAndSet(false)) {
                 errored.add(currentRecipe);
                 continue;
             }
 
-            for (RecipeStruct oldRecipe : checkedRecipes) {
+            for (HelperObjects.RecipeStruct oldRecipe : checkedRecipes) {
                 try {
                     Boolean result = (Boolean) testMethod.invoke(null, oldRecipe, currentRecipe);
                     if (result) {
@@ -163,7 +151,7 @@ public class TestRecipes {
                 checkedRecipes.add(currentRecipe);
         }
 
-        RecipeList list = new RecipeList(duplicates, errored);
+        HelperObjects.RecipeList list = new HelperObjects.RecipeList(duplicates, errored);
 
         try {
             loggingMethod.invoke(null, list, map.getLocalizedName(), detailed, exit);
