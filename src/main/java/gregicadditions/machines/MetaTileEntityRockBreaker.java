@@ -11,6 +11,8 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
 import gregtech.api.metatileentity.TieredMetaTileEntity;
 import gregtech.api.render.Textures;
+import gregtech.api.unification.OreDictUnifier;
+import gregtech.api.unification.ore.OrePrefix;
 import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,12 +27,19 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static gregtech.api.unification.material.Materials.*;
 
 public class MetaTileEntityRockBreaker extends TieredMetaTileEntity {
 
+    private RockList setTypes;
+
     public MetaTileEntityRockBreaker(ResourceLocation metaTileEntityId, int tier) {
         super(metaTileEntityId, tier);
+        setTypes = RockList.VANILLA;
     }
 
     @Override
@@ -38,32 +47,28 @@ public class MetaTileEntityRockBreaker extends TieredMetaTileEntity {
         return new MetaTileEntityRockBreaker(metaTileEntityId, getTier());
     }
 
-
     @Override
     public void update() {
         super.update();
-        if (!getWorld().isRemote && getTimer() % 20 == 0 && checkSides(Blocks.LAVA) && checkSides(Blocks.WATER) && energyContainer.getEnergyStored() >= getEnergyPerBlockBreak()) {
-            int stack = (int) Math.pow(2, getTier());
+        if (!getWorld().isRemote && getTimer() % 20 == 0 && checkSides(Blocks.LAVA) && checkSides(Blocks.WATER) && energyContainer.getEnergyStored() >= getEnergyPerBlockBreak() * 4L) {
+            int stack = setTypes == RockList.VANILLA ?
+                    (int) Math.pow(2, getTier()) :
+                    (int) Math.pow(2, getTier() - 1);
 
-            ItemStack diorite = new ItemStack(Blocks.STONE, stack, 3);
-            ItemStack granite = new ItemStack(Blocks.STONE, stack, 1);
-            ItemStack andesite = new ItemStack(Blocks.STONE, stack, 5);
-            ItemStack cobble = new ItemStack(Blocks.COBBLESTONE, stack);
+            int insertSlot = 0;
+            List<ItemStack> returns = new ArrayList<>();
+            for (RockType rockType : setTypes.types) {
+                for (int i = 0; i < 4; i++) {
+                    ItemStack rock = rockType.rock.copy();
+                    rock.setCount(stack);
+                    returns.add(insertSlot / 4, exportItems.insertItem(insertSlot++, rock, false));
+                }
+            }
 
-            for (int i = 0; i < 4; i++) {
-                cobble = exportItems.insertItem(i, cobble, false);
-            }
-            for (int i = 4; i < 8; i++) {
-                diorite = exportItems.insertItem(i, diorite, false);
-            }
-            for (int i = 8; i < 12; i++) {
-                granite = exportItems.insertItem(i, granite, false);
-            }
-            for (int i = 12; i < 16; i++) {
-                andesite = exportItems.insertItem(i, andesite, false);
-            }
-            if (cobble.getCount() != stack || diorite.getCount() != stack || granite.getCount() != stack || andesite.getCount() != stack)
-                energyContainer.removeEnergy(getEnergyPerBlockBreak());
+            // Consume energy equal to 0.25A of tier times types of rocks produced
+            long size;
+            if ((size = returns.stream().filter(is -> is.getCount() != stack).count()) > 0)
+                energyContainer.removeEnergy(getEnergyPerBlockBreak() * size);
         }
     }
 
@@ -77,8 +82,9 @@ public class MetaTileEntityRockBreaker extends TieredMetaTileEntity {
         return false;
     }
 
+    // Base 0.25A when only 1 rock type produced
     private int getEnergyPerBlockBreak() {
-        return (int) GAValues.V[getTier()];
+        return GAValues.V[getTier()] / 4;
     }
 
     @Override
@@ -113,5 +119,38 @@ public class MetaTileEntityRockBreaker extends TieredMetaTileEntity {
     @Override
     public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, boolean advanced) {
         tooltip.add(I18n.format("gtadditions.machine.rock_breaker.description"));
+    }
+
+    private enum RockList {
+
+        VANILLA(RockType.COBBLESTONE, RockType.DIORITE, RockType.GRANITE, RockType.ANDESITE),
+        GREGTECH(RockType.BLACKGRANITE, RockType.REDGRANITE, RockType.BASALT, RockType.MARBLE);
+
+        List<RockType> types;
+
+        RockList(RockType... types) {
+            this.types = new ArrayList<>(Arrays.asList(types));
+        }
+    }
+
+    private enum RockType {
+
+        // Vanilla
+        COBBLESTONE(new ItemStack(Blocks.COBBLESTONE)),
+        DIORITE(new ItemStack(Blocks.STONE, 1, 3)),
+        GRANITE(new ItemStack(Blocks.STONE, 1, 1)),
+        ANDESITE(new ItemStack(Blocks.STONE, 1, 5)),
+
+        // GregTech
+        BLACKGRANITE(OreDictUnifier.get(OrePrefix.block, GraniteBlack)),
+        REDGRANITE(OreDictUnifier.get(OrePrefix.block, GraniteRed)),
+        BASALT(OreDictUnifier.get(OrePrefix.block, Basalt)),
+        MARBLE(OreDictUnifier.get(OrePrefix.block, Marble));
+
+        ItemStack rock;
+
+        RockType(ItemStack rock) {
+            this.rock = rock;
+        }
     }
 }
