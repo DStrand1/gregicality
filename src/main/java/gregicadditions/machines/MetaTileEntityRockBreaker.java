@@ -4,8 +4,11 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
 import gregicadditions.GAValues;
+import gregicadditions.utils.GALog;
 import gregtech.api.gui.GuiTextures;
 import gregtech.api.gui.ModularUI;
+import gregtech.api.gui.Widget;
+import gregtech.api.gui.widgets.CycleButtonWidget;
 import gregtech.api.gui.widgets.SlotWidget;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
@@ -13,12 +16,18 @@ import gregtech.api.metatileentity.TieredMetaTileEntity;
 import gregtech.api.render.Textures;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.ore.OrePrefix;
+import gregtech.common.blocks.BlockGranite;
+import gregtech.common.blocks.MetaBlocks;
+import gregtech.common.blocks.StoneBlock;
 import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -48,6 +57,30 @@ public class MetaTileEntityRockBreaker extends TieredMetaTileEntity {
     }
 
     @Override
+    public void writeInitialSyncData(PacketBuffer buf) {
+        super.writeInitialSyncData(buf);
+        buf.writeEnumValue(setTypes);
+    }
+
+    @Override
+    public void receiveInitialSyncData(PacketBuffer buf) {
+        super.receiveInitialSyncData(buf);
+        setTypes = buf.readEnumValue(RockList.class);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound data) {
+        data.setString("RockType", setTypes.getNBTKey());
+        return super.writeToNBT(data);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound data) {
+        super.readFromNBT(data);
+        this.setTypes = RockList.getFromNBTKey(data.getString("RockType"));
+    }
+
+    @Override
     public void update() {
         super.update();
         if (!getWorld().isRemote && getTimer() % 20 == 0 && checkSides(Blocks.LAVA) && checkSides(Blocks.WATER) && energyContainer.getEnergyStored() >= getEnergyPerBlockBreak() * 4L) {
@@ -55,6 +88,7 @@ public class MetaTileEntityRockBreaker extends TieredMetaTileEntity {
                     (int) Math.pow(2, getTier()) :
                     (int) Math.pow(2, getTier() - 1);
 
+            GALog.logger.info(setTypes.toString());
             int insertSlot = 0;
             List<ItemStack> returns = new ArrayList<>();
             for (RockType rockType : setTypes.types) {
@@ -105,8 +139,32 @@ public class MetaTileEntityRockBreaker extends TieredMetaTileEntity {
                         .setBackgroundTexture(GuiTextures.SLOT));
             }
         }
+
+        Widget button = new CycleButtonWidget(26, 45, 18, 18,
+                RockList.class, this::getRockType, this::setRockType)
+                .setTooltipHoverString(getButtonHover());
+        builder.widget(button);
+
+
         builder.bindPlayerInventory(entityPlayer.inventory, GuiTextures.SLOT, 8, 18 + 18 * rowSize + 12);
         return builder.build(getHolder(), entityPlayer);
+    }
+
+    private void setRockType(RockList rockList) {
+        setTypes = rockList;
+    }
+
+    private RockList getRockType() {
+        return setTypes;
+    }
+
+    private String getButtonHover() {
+        if (setTypes == RockList.VANILLA)
+            return "gtadditions.machine.rock_breaker.button_vanilla";
+        else if (getTier() == 1)
+            return "gtadditions.machine.rock_breaker.button_gregtech_low_power";
+        else
+            return "gtadditions.machine.rock_breaker.button_gregtech";
     }
 
     @Override
@@ -121,15 +179,41 @@ public class MetaTileEntityRockBreaker extends TieredMetaTileEntity {
         tooltip.add(I18n.format("gtadditions.machine.rock_breaker.description"));
     }
 
-    private enum RockList {
+    private enum RockList implements IStringSerializable {
 
-        VANILLA(RockType.COBBLESTONE, RockType.DIORITE, RockType.GRANITE, RockType.ANDESITE),
-        GREGTECH(RockType.BLACKGRANITE, RockType.REDGRANITE, RockType.BASALT, RockType.MARBLE);
+        VANILLA("gtadditions.machine.rock_breaker.mode.vanilla",
+                RockType.COBBLESTONE, RockType.DIORITE, RockType.GRANITE, RockType.ANDESITE),
+        GREGTECH("gtadditions.machine.rock_breaker.mode.gregtech",
+                RockType.BLACKGRANITE, RockType.REDGRANITE, RockType.BASALT, RockType.MARBLE);
 
+        String localeName;
         List<RockType> types;
 
-        RockList(RockType... types) {
+        RockList(String localeName, RockType... types) {
+            this.localeName = localeName;
             this.types = new ArrayList<>(Arrays.asList(types));
+        }
+
+        @Override
+        public String getName() {
+            return localeName;
+        }
+
+        @Override
+        public String toString() {
+            return localeName.split("\\.")[4];
+        }
+
+        String getNBTKey() {
+            if (this == VANILLA)
+                return "vanilla";
+            return "gregtech";
+        }
+
+        static RockList getFromNBTKey(String key) {
+            if (key.equals("vanilla"))
+                return VANILLA;
+            return GREGTECH;
         }
     }
 
@@ -142,7 +226,7 @@ public class MetaTileEntityRockBreaker extends TieredMetaTileEntity {
         ANDESITE(new ItemStack(Blocks.STONE, 1, 5)),
 
         // GregTech
-        BLACKGRANITE(OreDictUnifier.get(OrePrefix.block, GraniteBlack)),
+        BLACKGRANITE(new ItemStack(MetaBlocks.GRANITE.withVariant(BlockGranite.GraniteVariant.BLACK_GRANITE, StoneBlock.ChiselingVariant.NORMAL).getBlock())),
         REDGRANITE(OreDictUnifier.get(OrePrefix.block, GraniteRed)),
         BASALT(OreDictUnifier.get(OrePrefix.block, Basalt)),
         MARBLE(OreDictUnifier.get(OrePrefix.block, Marble));

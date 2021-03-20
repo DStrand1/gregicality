@@ -4058,3 +4058,9 @@ recipemap.disassembler.name=Disassembler
 
 gtadditions.machine.pa.display1=Set Recipes: §6%s
 gtadditions.machine.pa.display2=Parallel Recipes: §b%d
+
+gtadditions.machine.rock_breaker.button_vanilla=Cobblestone, Diorite, Granite, Andesite
+gtadditions.machine.rock_breaker.button_gregtech_low_power=§4Cannot do GregTech stone types at this tier!
+gtadditions.machine.rock_breaker.button_gregtech=Black Granite, Red Granite, Basalt, Marble
+gtadditions.machine.rock_breaker.mode.vanilla=V
+gtadditions.machine.rock_breaker.mode.gregtech=G
