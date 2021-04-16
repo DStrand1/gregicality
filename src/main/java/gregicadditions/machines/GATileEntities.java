@@ -1,5 +1,8 @@
 package gregicadditions.machines;
 
+import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.pipeline.IVertexOperation;
+import codechicken.lib.vec.Matrix4;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import gregicadditions.GAConfig;
@@ -47,6 +50,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.SimpleGeneratorMetaTileEntity;
 import gregtech.api.metatileentity.SimpleMachineMetaTileEntity;
 import gregtech.api.recipes.RecipeMaps;
+import gregtech.api.render.SimpleSidedCubeRenderer;
 import gregtech.api.render.Textures;
 import gregtech.api.unification.material.Materials;
 import gregtech.api.unification.material.type.Material;
@@ -244,6 +248,10 @@ public class GATileEntities {
 
     public static List<GASimpleMachineMetaTileEntity> DISASSEMBLER = new ArrayList<>();
     public static MetaTileEntityElectricImplosion ELECTRIC_IMPLOSION;
+
+    public static SimpleGeneratorWithLossMetaTileEntity[] ACID_GENERATOR = new SimpleGeneratorWithLossMetaTileEntity[3];
+    public static SimpleGeneratorWithLossMetaTileEntity[] GEOTHERMAL_GENERATOR = new SimpleGeneratorWithLossMetaTileEntity[3];
+    public static SimpleGeneratorWithLossMetaTileEntity[] PLASMA_GENERATOR = new SimpleGeneratorWithLossMetaTileEntity[5];
 
     public static void init() {
 
@@ -1165,6 +1173,21 @@ public class GATileEntities {
             }
         }
         ELECTRIC_IMPLOSION = GregTechAPI.registerMetaTileEntity(4211, new MetaTileEntityElectricImplosion(location("electric_implosion")));
+
+        // TODO Override TieredMetaTileEntity#getBaseRenderer for these three once GregTechCE/GregTech#1573 has been merged and deployed
+        ACID_GENERATOR[0] = GregTechAPI.registerMetaTileEntity(4212, new SimpleGeneratorWithLossMetaTileEntity(location("acid_generator.lv"), GARecipeMaps.ACID_GENERATOR_RECIPES, ClientHandler.ACID_GENERATOR_OVERLAY, 1, 94));
+        ACID_GENERATOR[1] = GregTechAPI.registerMetaTileEntity(4213, new SimpleGeneratorWithLossMetaTileEntity(location("acid_generator.mv"), GARecipeMaps.ACID_GENERATOR_RECIPES, ClientHandler.ACID_GENERATOR_OVERLAY, 2, 91));
+        ACID_GENERATOR[2] = GregTechAPI.registerMetaTileEntity(4214, new SimpleGeneratorWithLossMetaTileEntity(location("acid_generator.hv"), GARecipeMaps.ACID_GENERATOR_RECIPES, ClientHandler.ACID_GENERATOR_OVERLAY, 3, 88));
+
+        GEOTHERMAL_GENERATOR[0] = GregTechAPI.registerMetaTileEntity(4215, new SimpleGeneratorWithLossMetaTileEntity(location("geothermal_generator.ev"), GARecipeMaps.GEOTHERMAL_GENERATOR_RECIPES, ClientHandler.GEOTHERMAL_GENERATOR_OVERLAY, 4, 72));
+        GEOTHERMAL_GENERATOR[1] = GregTechAPI.registerMetaTileEntity(4216, new SimpleGeneratorWithLossMetaTileEntity(location("geothermal_generator.iv"), GARecipeMaps.GEOTHERMAL_GENERATOR_RECIPES, ClientHandler.GEOTHERMAL_GENERATOR_OVERLAY, 5, 65));
+        GEOTHERMAL_GENERATOR[2] = GregTechAPI.registerMetaTileEntity(4217, new SimpleGeneratorWithLossMetaTileEntity(location("geothermal_generator.luv"), GARecipeMaps.GEOTHERMAL_GENERATOR_RECIPES, ClientHandler.GEOTHERMAL_GENERATOR_OVERLAY, 6, 58));
+
+        PLASMA_GENERATOR[0] = GregTechAPI.registerMetaTileEntity(4218, new SimpleGeneratorWithLossMetaTileEntity(location("plasma_generator_iv"), GARecipeMaps.PLASMA_GENERATOR_RECIPES, ClientHandler.PLASMA_GENERATOR_OVERLAY, 5, 50));
+        PLASMA_GENERATOR[0] = GregTechAPI.registerMetaTileEntity(4219, new SimpleGeneratorWithLossMetaTileEntity(location("plasma_generator_luv"), GARecipeMaps.PLASMA_GENERATOR_RECIPES, ClientHandler.PLASMA_GENERATOR_OVERLAY, 6, 60));
+        PLASMA_GENERATOR[0] = GregTechAPI.registerMetaTileEntity(4220, new SimpleGeneratorWithLossMetaTileEntity(location("plasma_generator_zpm"), GARecipeMaps.PLASMA_GENERATOR_RECIPES, ClientHandler.PLASMA_GENERATOR_OVERLAY, 7, 70));
+        PLASMA_GENERATOR[0] = GregTechAPI.registerMetaTileEntity(4221, new SimpleGeneratorWithLossMetaTileEntity(location("plasma_generator_uv"), GARecipeMaps.PLASMA_GENERATOR_RECIPES, ClientHandler.PLASMA_GENERATOR_OVERLAY, 8, 80));
+        PLASMA_GENERATOR[0] = GregTechAPI.registerMetaTileEntity(4222, new SimpleGeneratorWithLossMetaTileEntity(location("plasma_generator_uhv"), GARecipeMaps.PLASMA_GENERATOR_RECIPES, ClientHandler.PLASMA_GENERATOR_OVERLAY, 9, 90));
     }
 
     public static <T extends MetaTileEntity & ITieredMetaTileEntity> MTE<T> create(int id, T sampleMetaTileEntity) {

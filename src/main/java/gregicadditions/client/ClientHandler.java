@@ -13,8 +13,10 @@ import gregtech.api.render.OrientedOverlayRenderer.OverlayFace;
 import gregtech.api.render.SimpleCubeRenderer;
 import gregtech.api.render.SimpleOverlayRenderer;
 import gregtech.api.render.SimpleSidedCubeRenderer;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.relauncher.Side;
+import scala.tools.nsc.transform.patmat.Logic;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,6 +76,9 @@ public class ClientHandler {
     public static OrientedOverlayRenderer ADVANCED_ALLOY_OVERLAY = new OrientedOverlayRenderer("machines/advanced_alloy_smelter", OverlayFace.FRONT);
     public static SimpleOverlayRenderer HIGH_ENERGY_IN = new SimpleOverlayRenderer("overlay/machine/transformer/overlay_energy_in");
     public static SimpleOverlayRenderer HIGH_ENERGY_OUT = new SimpleOverlayRenderer("overlay/machine/transformer/overlay_energy_out");
+    public static OrientedOverlayRenderer ACID_GENERATOR_OVERLAY = new OrientedOverlayRenderer("machines/acid_generator", OverlayFace.bySide(EnumFacing.NORTH, EnumFacing.EAST), OverlayFace.TOP);
+    public static OrientedOverlayRenderer GEOTHERMAL_GENERATOR_OVERLAY = new OrientedOverlayRenderer("machines/geothermal_generator", OverlayFace.bySide(EnumFacing.NORTH, EnumFacing.EAST), OverlayFace.TOP, OverlayFace.BACK);
+    public static OrientedOverlayRenderer PLASMA_GENERATOR_OVERLAY = new OrientedOverlayRenderer("machines/gtplasma_generator", OverlayFace.values());
     // cover
     public static SimpleOverlayRenderer COVER_INTERFACE_FLUID = new SimpleOverlayRenderer("cover/cover_interface_fluid");
     public static SimpleOverlayRenderer COVER_INTERFACE_FLUID_GLASS = new SimpleOverlayRenderer("cover/cover_interface_fluid_glass");

@@ -91,6 +91,12 @@ public class GARecipeMaps {
     public static final RecipeMap<SimpleRecipeBuilder> DISASSEMBLER_RECIPES;
     @ZenProperty
     public static final RecipeMap<SimpleRecipeBuilder> ELECTRIC_IMPLOSION_RECIPES;
+    @ZenProperty
+    public static final FuelRecipeMap ACID_GENERATOR_RECIPES;
+    @ZenProperty
+    public static final FuelRecipeMap GEOTHERMAL_GENERATOR_RECIPES;
+    @ZenProperty
+    public static final FuelRecipeMap PLASMA_GENERATOR_RECIPES;
 
     static {
         CLUSTER_MILL_RECIPES = new RecipeMap<>("cluster_mill", 1, 1, 1, 1, 0, 0, 0, 0, new SimpleRecipeBuilder()).setSlotOverlay(false, false, GuiTextures.BENDER_OVERLAY).setProgressBar(GuiTextures.PROGRESS_BAR_BENDING, ProgressWidget.MoveType.HORIZONTAL);
@@ -169,5 +175,9 @@ public class GARecipeMaps {
         ELECTRIC_IMPLOSION_RECIPES = new RecipeMap<>("electric_implosion", 1, 2, 1,
                 2, 0, 0, 0, 0, new SimpleRecipeBuilder()
                 .duration(1).EUt(1500000)); // UHV-tier, 1tick processing time
+
+        ACID_GENERATOR_RECIPES = new FuelRecipeMap("acid_generator");
+        GEOTHERMAL_GENERATOR_RECIPES = new FuelRecipeMap("geothermal_generator");
+        PLASMA_GENERATOR_RECIPES = new FuelRecipeMap("plasma_generator");
     }
 }
