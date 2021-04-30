@@ -81,6 +81,10 @@ public class GAConfig {
         @Config.Name("Cables can be isolated with different combinations of Rubbers and Dusts with varying efficiencies")
         public boolean CablesGT5U = true;
 
+        @Config.Comment("Set to true to enable the GT5u/GTNH Energy Hatch recipes")
+        @Config.Name("GTNH Energy Hatch Recipes")
+        public boolean HatchesGTNH = false;
+
         @Config.Comment("Set these to false to disable the generated Compressor recipes for blocks")
         @Config.Name("Compression - Generate Compressor recipes for blocks")
         public boolean GenerateCompressorRecipes = true;

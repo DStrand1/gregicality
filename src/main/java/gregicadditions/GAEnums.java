@@ -43,6 +43,7 @@ public class GAEnums {
         public final static MaterialIconType ingotDouble = createMaterialIconType("ingotDouble");
         public final static MaterialIconType round = createMaterialIconType("round");
         public final static MaterialIconType coke = createMaterialIconType("coke");
+        public final static MaterialIconType coil = createMaterialIconType("coil");
     }
 
     public static class GAOrePrefix {
@@ -77,7 +78,7 @@ public class GAEnums {
         public final static OrePrefix opticalFiberQuadruple = createOrePrefix("opticalFiberQuadruple", "Quadruple optical fiber", M * 2, null, null, OrePrefix.Flags.ENABLE_UNIFICATION, null);
         public final static OrePrefix opticalFiberDouble = createOrePrefix("opticalFiberDouble", "Double optical fiber", M, null, null, OrePrefix.Flags.ENABLE_UNIFICATION, null);
         public final static OrePrefix opticalFiberSingle = createOrePrefix("opticalFiberSingle", "Single optical fiber", M / 2, null, null, OrePrefix.Flags.ENABLE_UNIFICATION, null);
-
+        public final static OrePrefix coil = createOrePrefix("coil", "Coil Item", M * 2, null, GAMaterialIconType.coil, OrePrefix.Flags.ENABLE_UNIFICATION, pred(mat -> ingot.test(mat) && mat.hasFlag(IngotMaterial.MatFlags.GENERATE_FINE_WIRE)));
 
     }
 

@@ -13,6 +13,7 @@ import gregtech.common.metatileentities.MetaTileEntities;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
+import static gregicadditions.GAEnums.GAOrePrefix.coil;
 import static gregicadditions.GAMaterials.*;
 import static gregtech.api.GTValues.W;
 import static gregtech.api.unification.material.Materials.*;
@@ -967,6 +968,35 @@ public enum GACraftingComponents {
             }
         }
     },
+    COIL_ITEM {
+        @Override
+        public Object getIngredient(int tier) {
+            switch (tier) {
+                case 0:
+                    return new UnificationEntry(coil, Lead);
+                case 1:
+                    return new UnificationEntry(coil, Steel);
+                case 2:
+                    return new UnificationEntry(coil, Aluminium);
+                case 3:
+                    return new UnificationEntry(coil, Electrum);
+                case 4:
+                    return new UnificationEntry(coil, TungstenSteel);
+                case 5:
+                    return new UnificationEntry(coil, Iridium);
+                case 6:
+                    return new UnificationEntry(coil, Ruridit);
+                case 7:
+                    return new UnificationEntry(coil, Europium);
+                case 8:
+                    return new UnificationEntry(coil, Americium);
+                case 9:
+                    return new UnificationEntry(coil, Tritanium);
+                default:
+                    return new UnificationEntry(coil, Neutronium); // TODO
+            }
+        }
+    }
     ;
 
     public abstract Object getIngredient(int tier);

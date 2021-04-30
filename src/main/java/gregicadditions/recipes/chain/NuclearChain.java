@@ -92,7 +92,7 @@ public class NuclearChain {
                 .buildAndRegister();
 
         // 3K + 7Na -> Na7K3
-        MIXER_RECIPES.recipeBuilder().duration(300).EUt(120)
+        MIXER_RECIPES.recipeBuilder().duration(300).EUt(30)
                 .input(dust, Potassium, 3)
                 .input(dust, Sodium, 7)
                 .output(dust, SodiumPotassiumAlloy, 10)
