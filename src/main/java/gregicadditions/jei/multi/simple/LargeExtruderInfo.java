@@ -12,39 +12,36 @@ import gregtech.integration.jei.multiblock.MultiblockShapeInfo;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LargeExtruderInfo extends MultiblockInfoPage {
-	@Override
-	public MultiblockControllerBase getController() {
+
+    @Override
+    public MultiblockControllerBase getController() {
 		return GATileEntities.LARGE_EXTRUDER;
 	}
 
-	@Override
-	public List<MultiblockShapeInfo> getMatchingShapes() {
-		ArrayList<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-			shapeInfo.add(MultiblockShapeInfo.builder()
-					.aisle("XXX", "XEX", "XXX")
-					.aisle("XXX", "X#X", "XXX")
-					.aisle("XXX", "X#X", "XXX")
-					.aisle("IXX", "X#X", "XXX")
-					.aisle("OPX", "XSX", "XXX")
-					.where('E', MetaTileEntities.ENERGY_INPUT_HATCH[GAValues.HV], EnumFacing.NORTH)
-					.where('S', GATileEntities.LARGE_EXTRUDER, EnumFacing.SOUTH)
-					.where('X', GAMetaBlocks.getMetalCasingBlockState(TileEntityLargeExtruder.casingMaterial))
-					.where('#', Blocks.AIR.getDefaultState())
-					.where('I', MetaTileEntities.ITEM_IMPORT_BUS[GAValues.LV], EnumFacing.WEST)
-					.where('O', MetaTileEntities.ITEM_EXPORT_BUS[GAValues.LV], EnumFacing.WEST)
-					.where('P', GAMetaBlocks.PISTON_CASING.getDefaultState())
-					.build());
+    @Override
+    public List<MultiblockShapeInfo> getMatchingShapes() {
+        MultiblockShapeInfo shapeInfo = MultiblockShapeInfo.builder()
+                .aisle("XPX", "XSX", "XXX")
+                .aisle("XXX", "I#X", "XXX")
+                .aisle("XXX", "I#X", "XXX")
+                .aisle("XXX", "I#X", "XXX")
+                .aisle("XXX", "OEX", "XXX")
+                .where('E', MetaTileEntities.ENERGY_INPUT_HATCH[GAValues.HV], EnumFacing.SOUTH)
+                .where('S', GATileEntities.LARGE_EXTRUDER, EnumFacing.NORTH)
+                .where('X', GAMetaBlocks.getMetalCasingBlockState(TileEntityLargeExtruder.casingMaterial))
+                .where('#', Blocks.AIR.getDefaultState())
+                .where('I', MetaTileEntities.ITEM_IMPORT_BUS[GAValues.LV], EnumFacing.WEST)
+                .where('O', MetaTileEntities.ITEM_EXPORT_BUS[GAValues.LV], EnumFacing.WEST)
+                .where('P', GAMetaBlocks.PISTON_CASING.getDefaultState())
+                .build();
+        return Lists.newArrayList(shapeInfo);
+    }
 
-
-		return Lists.newArrayList(shapeInfo);
-	}
-
-	@Override
-	public String[] getDescription() {
-		return new String[]{};
-	}
+    @Override
+    public String[] getDescription() {
+        return new String[]{};
+    }
 }

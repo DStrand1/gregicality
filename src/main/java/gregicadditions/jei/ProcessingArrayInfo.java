@@ -18,10 +18,6 @@ import java.util.List;
 
 public class ProcessingArrayInfo extends MultiblockInfoPage {
 
-	public ProcessingArrayInfo() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public MultiblockControllerBase getController() {
 		return GATileEntities.PROCESSING_ARRAY;
@@ -35,7 +31,7 @@ public class ProcessingArrayInfo extends MultiblockInfoPage {
 				.aisle("OXX", "XXX", "XXX")
 				.where('S', GATileEntities.PROCESSING_ARRAY, EnumFacing.WEST)
 				.where('X', GAMetaBlocks.getMetalCasingBlockState(Materials.TungstenSteel))
-				.where('E', MetaTileEntities.ENERGY_INPUT_HATCH[GAValues.MV], EnumFacing.WEST)
+				.where('E', MetaTileEntities.ENERGY_INPUT_HATCH[GAValues.IV], EnumFacing.WEST)
 				.where('#', Blocks.AIR.getDefaultState())
 				.where('I', MetaTileEntities.ITEM_IMPORT_BUS[GAValues.LV], EnumFacing.WEST)
 				.where('O', MetaTileEntities.ITEM_EXPORT_BUS[GAValues.LV], EnumFacing.WEST).build();
@@ -45,9 +41,7 @@ public class ProcessingArrayInfo extends MultiblockInfoPage {
 
 	@Override
 	public String[] getDescription() {
-		// TODO Auto-generated method stub
 		return new String[] { I18n.format("gregtech.multiblock.processing_array.description",
 				GAConfig.multis.processingArray.processingArrayMachineLimit) };
 	}
-
 }

@@ -54,4 +54,8 @@ public class NuclearReactorInfo extends MultiblockInfoPage {
         return new String[]{I18n.format("gtadditions.multiblock.reactor.description")};
     }
 
+    @Override
+    public float getDefaultZoom() {
+        return 0.5f;
+    }
 }

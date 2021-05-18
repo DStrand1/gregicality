@@ -30,17 +30,15 @@ public class LargeCircuitAssemblyLineInfo extends MultiblockInfoPage {
     public List<MultiblockShapeInfo> getMatchingShapes() {
         return TileEntityLargeCircuitAssemblyLine.CASING1_ALLOWED.stream().map(casingType -> {
             GAMultiblockShapeInfo.Builder builder = GAMultiblockShapeInfo.builder();
-            builder.aisle("COC", "RTR", "GYG");
-            for (int num = 0; num < 5; num++) {
-                if (num == 1) builder.aisle("CIC", "RTR", "GAG");
-                else builder.aisle("CIC", "RTR", "GAG");
-            }
-            builder.aisle("FIC", "RTR", "GSG")
-                    .where('S', GATileEntities.LARGE_CIRCUIT_ASSEMBLY_LINE, EnumFacing.SOUTH)
+            builder.aisle("COC", "RTR", "GSG");
+            for (int num = 0; num < 5; num++)
+                builder.aisle("CIC", "RTR", "GAG");
+            builder.aisle("FIC", "RTR", "GYG")
+                    .where('S', GATileEntities.LARGE_CIRCUIT_ASSEMBLY_LINE, EnumFacing.NORTH)
                     .where('C', GAMetaBlocks.getMetalCasingBlockState(Steel))
                     .where('F', MetaTileEntities.FLUID_IMPORT_HATCH[4], EnumFacing.WEST)
                     .where('O', MetaTileEntities.ITEM_EXPORT_BUS[4], EnumFacing.DOWN)
-                    .where('Y', MetaTileEntities.ENERGY_INPUT_HATCH[4], EnumFacing.NORTH)
+                    .where('Y', MetaTileEntities.ENERGY_INPUT_HATCH[4], EnumFacing.SOUTH)
                     .where('I', MetaTileEntities.ITEM_IMPORT_BUS[0], EnumFacing.DOWN)
                     .where('G', MetaBlocks.MUTLIBLOCK_CASING.getState(BlockMultiblockCasing.MultiblockCasingType.GRATE_CASING))
                     .where('A', MetaBlocks.MUTLIBLOCK_CASING.getState(BlockMultiblockCasing.MultiblockCasingType.ASSEMBLER_CASING))
@@ -55,4 +53,8 @@ public class LargeCircuitAssemblyLineInfo extends MultiblockInfoPage {
         return new String[]{I18n.format("gregtech.multiblock.large_circuit_assembly.description")};
     }
 
+    @Override
+    public float getDefaultZoom() {
+        return 0.9f;
+    }
 }

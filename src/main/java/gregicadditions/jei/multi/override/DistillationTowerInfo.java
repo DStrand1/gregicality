@@ -18,30 +18,35 @@ import static gregtech.api.unification.material.Materials.StainlessSteel;
 
 public class DistillationTowerInfo extends MultiblockInfoPage {
 
-	@Override
-	public MultiblockControllerBase getController() {
+    @Override
+    public MultiblockControllerBase getController() {
 		return GATileEntities.DISTILLATION_TOWER;
 	}
 
-	@Override
-	public List<MultiblockShapeInfo> getMatchingShapes() {
-		MultiblockShapeInfo shapeInfo = MultiblockShapeInfo.builder()
-				.aisle("EXX", "XXX", "XXX", "XXX", "XXX", "XXX")
-				.aisle("SFX", "X#X", "X#X", "X#X", "X#X", "XXX")
-				.aisle("IXX", "HXX", "HXX", "HXX", "HXX", "HXX")
-				.where('#', Blocks.AIR.getDefaultState())
-				.where('X', GAMetaBlocks.getMetalCasingBlockState(StainlessSteel))
-				.where('S', GATileEntities.DISTILLATION_TOWER, EnumFacing.WEST)
-				.where('E', MetaTileEntities.ENERGY_INPUT_HATCH[GAValues.EV], EnumFacing.WEST)
-				.where('I', MetaTileEntities.ITEM_EXPORT_BUS[GAValues.EV], EnumFacing.WEST)
-				.where('F', MetaTileEntities.FLUID_IMPORT_HATCH[GAValues.EV], EnumFacing.DOWN)
-				.where('H', MetaTileEntities.FLUID_EXPORT_HATCH[GAValues.EV], EnumFacing.WEST)
-				.build();
-		return Lists.newArrayList(shapeInfo);
-	}
+    @Override
+    public List<MultiblockShapeInfo> getMatchingShapes() {
+        MultiblockShapeInfo shapeInfo = MultiblockShapeInfo.builder()
+                .aisle("EXX", "XXX", "XXX", "XXX", "XXX", "XXX")
+                .aisle("SFX", "X#X", "X#X", "X#X", "X#X", "XXX")
+                .aisle("IXX", "HXX", "HXX", "HXX", "HXX", "HXX")
+                .where('#', Blocks.AIR.getDefaultState())
+                .where('X', GAMetaBlocks.getMetalCasingBlockState(StainlessSteel))
+                .where('S', GATileEntities.DISTILLATION_TOWER, EnumFacing.WEST)
+                .where('E', MetaTileEntities.ENERGY_INPUT_HATCH[GAValues.EV], EnumFacing.WEST)
+                .where('I', MetaTileEntities.ITEM_EXPORT_BUS[GAValues.EV], EnumFacing.WEST)
+                .where('F', MetaTileEntities.FLUID_IMPORT_HATCH[GAValues.EV], EnumFacing.DOWN)
+                .where('H', MetaTileEntities.FLUID_EXPORT_HATCH[GAValues.EV], EnumFacing.WEST)
+                .build();
+        return Lists.newArrayList(shapeInfo);
+    }
 
-	@Override
-	public String[] getDescription() {
-		return new String[]{I18n.format("gregtech.multiblock.distillation_tower.description")};
-	}
+    @Override
+    public String[] getDescription() {
+        return new String[]{I18n.format("gregtech.multiblock.distillation_tower.description")};
+    }
+
+    @Override
+    public float getDefaultZoom() {
+        return 0.9f;
+    }
 }

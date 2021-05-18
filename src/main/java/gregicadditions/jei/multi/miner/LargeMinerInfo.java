@@ -51,4 +51,9 @@ public class LargeMinerInfo extends MultiblockInfoPage {
     public String[] getDescription() {
         return new String[]{};
     }
+
+    @Override
+    public float getDefaultZoom() {
+        return 0.7f;
+    }
 }

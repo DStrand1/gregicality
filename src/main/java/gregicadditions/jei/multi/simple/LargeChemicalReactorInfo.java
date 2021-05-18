@@ -12,37 +12,34 @@ import gregtech.integration.jei.multiblock.MultiblockShapeInfo;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LargeChemicalReactorInfo extends MultiblockInfoPage {
-	@Override
-	public MultiblockControllerBase getController() {
-		return GATileEntities.LARGE_CHEMICAL_REACTOR;
-	}
 
-	@Override
-	public List<MultiblockShapeInfo> getMatchingShapes() {
-		ArrayList<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-			shapeInfo.add(MultiblockShapeInfo.builder()
-					.aisle("XXX", "XEX", "XXX")
-					.aisle("IXX", "X#X", "XXX")
-					.aisle("OMX", "XSX", "XXX")
-					.where('E', MetaTileEntities.ENERGY_INPUT_HATCH[GAValues.HV], EnumFacing.NORTH)
-					.where('S', GATileEntities.LARGE_CHEMICAL_REACTOR, EnumFacing.SOUTH)
-					.where('X', GAMetaBlocks.MUTLIBLOCK_CASING.getState(GAMultiblockCasing.CasingType.CHEMICALLY_INERT))
-					.where('#', Blocks.AIR.getDefaultState())
-					.where('I', MetaTileEntities.ITEM_IMPORT_BUS[GAValues.LV], EnumFacing.WEST)
-					.where('O', MetaTileEntities.ITEM_EXPORT_BUS[GAValues.LV], EnumFacing.WEST)
-					.where('M', GAMetaBlocks.MOTOR_CASING.getDefaultState())
-					.build());
+    @Override
+    public MultiblockControllerBase getController() {
+        return GATileEntities.LARGE_CHEMICAL_REACTOR;
+    }
 
+    @Override
+    public List<MultiblockShapeInfo> getMatchingShapes() {
+        MultiblockShapeInfo shapeInfo = MultiblockShapeInfo.builder()
+                .aisle("XXX", "XSX", "XMO")
+                .aisle("XXX", "X#X", "XXI")
+                .aisle("XXX", "XEX", "XXX")
+                .where('E', MetaTileEntities.ENERGY_INPUT_HATCH[GAValues.HV], EnumFacing.SOUTH)
+                .where('S', GATileEntities.LARGE_CHEMICAL_REACTOR, EnumFacing.NORTH)
+                .where('X', GAMetaBlocks.MUTLIBLOCK_CASING.getState(GAMultiblockCasing.CasingType.CHEMICALLY_INERT))
+                .where('#', Blocks.AIR.getDefaultState())
+                .where('I', MetaTileEntities.ITEM_IMPORT_BUS[GAValues.LV], EnumFacing.EAST)
+                .where('O', MetaTileEntities.ITEM_EXPORT_BUS[GAValues.LV], EnumFacing.EAST)
+                .where('M', GAMetaBlocks.MOTOR_CASING.getDefaultState())
+                .build();
+        return Lists.newArrayList(shapeInfo);
+    }
 
-		return Lists.newArrayList(shapeInfo);
-	}
-
-	@Override
-	public String[] getDescription() {
-		return new String[]{};
-	}
+    @Override
+    public String[] getDescription() {
+        return new String[]{};
+    }
 }

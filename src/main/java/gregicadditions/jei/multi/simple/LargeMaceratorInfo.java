@@ -46,4 +46,9 @@ public class LargeMaceratorInfo extends MultiblockInfoPage {
 	public String[] getDescription() {
 		return new String[]{};
 	}
+
+    @Override
+    public float getDefaultZoom() {
+        return 0.9f;
+    }
 }

@@ -35,6 +35,9 @@ public class CrackerUnitInfo extends MultiblockInfoPage {
             if (!Arrays.asList(GAConfig.multis.heatingCoils.gtceHeatingCoilsBlacklist).contains(coilType.getName())) {
 
                 shapeInfo.add(MultiblockShapeInfo.builder()
+                        .aisle("")
+
+
                         .aisle("XCXCX", "XCSCF", "XCXCX")
                         .aisle("XCXCX", "H###X", "XCXCX")
                         .aisle("XCXCX", "XCECF", "XCXCX")

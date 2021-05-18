@@ -98,6 +98,6 @@ public class FusionReactorInfo extends MultiblockInfoPage {
 
     @Override
     public float getDefaultZoom() {
-        return 0.3f;
+        return 0.4f;
     }
 }
