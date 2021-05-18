@@ -16,7 +16,7 @@ import net.minecraft.util.EnumFacing;
 
 import java.util.List;
 
-public class FusionReactor4Info extends MultiblockInfoPage {
+public class AdvancedFusionReactorInfo extends MultiblockInfoPage {
     @Override
     public MultiblockControllerBase getController() {
 
