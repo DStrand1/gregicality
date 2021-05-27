@@ -12,9 +12,7 @@ import gregtech.api.unification.stack.MaterialStack;
 import gregtech.common.MetaFluids;
 import net.minecraftforge.common.util.EnumHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -29,6 +27,18 @@ public class GAEnums {
     public static final List<OrePrefix> RICH_ORES = new ArrayList<>();
     public static final List<OrePrefix> POOR_ORES = new ArrayList<>();
     public static final List<OrePrefix> PURE_ORES = new ArrayList<>();
+
+    public static final List<Set<OrePrefix>> familiarPrefixes = new ArrayList<>();
+
+    public static boolean addFamiliarPrefix(OrePrefix... prefixes) {
+        for (int i = 0; i < prefixes.length; i++) {
+            for (int j = i + 1; j < prefixes.length; j++) {
+                if (prefixes[i].ordinal() == prefixes[j].ordinal())
+                    return false;
+            }
+        }
+        return familiarPrefixes.add(new HashSet<>(Arrays.asList(prefixes)));
+    }
 
     public static class GAMaterialIconType {
 
@@ -147,7 +157,23 @@ public class GAEnums {
             PURE_ORES.add(OrePrefix.valueOf("orePure" + stoneTypes[i]));
         }
 
+        if (GAConfig.GT5U.enableFamiliarPrefixes) {
+            addFamiliarPrefix(OrePrefix.dust, OrePrefix.dustSmall, OrePrefix.dustTiny);
+            addFamiliarPrefix(OrePrefix.nugget, OrePrefix.ingot);
+            gatherFamiliarPrefixes("ore");
+            gatherFamiliarPrefixes("pipe");
+            gatherFamiliarPrefixes("wireGt");
+            gatherFamiliarPrefixes("cableGt");
+        }
+    }
 
+    private static void gatherFamiliarPrefixes(String startsWith) {
+        List<OrePrefix> prefixes = new ArrayList<>();
+        for (OrePrefix prefix : OrePrefix.values()) {
+            if (prefix.name().startsWith(startsWith))
+                prefixes.add(prefix);
+        }
+        addFamiliarPrefix(prefixes.toArray(new OrePrefix[0]));
     }
 
     public static final Predicate<Material> dust = mat -> mat instanceof DustMaterial;

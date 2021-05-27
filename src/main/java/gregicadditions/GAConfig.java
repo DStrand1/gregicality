@@ -189,6 +189,9 @@ public class GAConfig {
         public boolean enableZPMandUVBats = false;
         @Config.Name("Batteries - Replace the Ultimate Battery with a MAX Battery")
         public boolean replaceUVwithMAXBat = false;
+
+        @Config.Comment("Should certain items (like Dusts, Small Dusts, and Tiny Dusts) all appear in JEI uses and recipes?")
+        public boolean enableFamiliarPrefixes = true;
     }
 
     @Config.Comment("Config options of GTCE Bees features")
